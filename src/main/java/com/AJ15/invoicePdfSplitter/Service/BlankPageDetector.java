@@ -12,7 +12,7 @@ import java.util.List;
 public class BlankPageDetector {
 
     public static void main(String[] args) {
-        File file = new File("Blank_Pdf_Tester.pdf");
+        File file = new File("Blank_tester.pdf");
 
         try (PDDocument document = Loader.loadPDF(file)) {
 //            Test print
@@ -41,7 +41,7 @@ public class BlankPageDetector {
 
             String text = stripper.getText(document).trim();
             if (text.isEmpty()) {
-                blankPageList.add(i + 1);
+                blankPageList.add(i);
             }
         }
 //        System.out.println(pageCount);
