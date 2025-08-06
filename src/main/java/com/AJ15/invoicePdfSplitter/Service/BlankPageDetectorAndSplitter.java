@@ -9,10 +9,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BlankPageDetector {
+public class BlankPageDetectorAndSplitter {
 
     public static void main(String[] args) {
-        File file = new File("Blank_tester.pdf");
+        File file = new File("Test_Invoice_200_Pages.pdf");
 
         try (PDDocument document = Loader.loadPDF(file)) {
 //            Test print
@@ -27,7 +27,7 @@ public class BlankPageDetector {
             throw new RuntimeException("Failed to load PDF", e);
         }
     }
-
+//Method to find Blank Pages
     public static List<Integer> findBlankPages(PDDocument document) throws IOException {
         ArrayList<Integer> blankPageList = new ArrayList<>();
 
@@ -47,6 +47,7 @@ public class BlankPageDetector {
 //        System.out.println(pageCount);
         return blankPageList;
     }
+
 
     public static void splitPdf(PDDocument document,List<Integer> blankPages) throws IOException {
         int totalPages = document.getNumberOfPages();
@@ -68,9 +69,10 @@ public class BlankPageDetector {
 
 
 
-            try (PDDocument splitDoc = new PDDocument()) {
+            try (PDDocument splitDoc = new PDDocument())
+            //                    new pdf for non empty pages
+            {
                 for (int i = startPage; i < bPages; i++) {
-//                    new pdf for non empty pages
                     splitDoc.addPage(document.getPage(i));
                 }
                 if(splitDoc.getNumberOfPages()>0){
