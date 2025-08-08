@@ -71,16 +71,23 @@ public class PdfSplitController {
         try (PDDocument document = Loader.loadPDF(file.getInputStream().readAllBytes())) {
             String baseName = file.getOriginalFilename();
             List<File> splitFiles = pdfSplitService.splitByBlankPages(document, baseName);
+
             StreamingResponseBody stream = pdfSplitService.zipFilesToStream(splitFiles);
             return ResponseEntity.ok()
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"split_pdfs.zip\"")
                     .contentType(MediaType.APPLICATION_OCTET_STREAM)
                     .body(stream);
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(outputStream -> {
+                outputStream.write(e.getMessage().getBytes());
+            });
         } catch (IOException e) {
             log.error("Error during blank split", e);
             return ResponseEntity.internalServerError().body(null);
         }
     }
+
 
     private File createZipFromFiles(List<File> files, String zipFileName) throws IOException {
         File zipFile = new File(OUTPUT_DIR, zipFileName);

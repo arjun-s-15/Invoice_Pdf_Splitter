@@ -41,6 +41,9 @@ public class PdfSplitService {
 
     public List<File> splitByBlankPages(PDDocument document, String originalFilename) throws IOException {
         List<Integer> blankPages = findBlankPages(document);
+        if (blankPages.size() <= 1) {
+            throw new IllegalArgumentException("Not enough blank pages to split (must be more than 1).");
+        }
         return splitPdfAtPages(document, blankPages, getBaseName(originalFilename));
     }
 
